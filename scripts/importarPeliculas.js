@@ -1,7 +1,10 @@
+import { crearEncabezadosSupabase } from "./crearEncabezadosSupabase.js";
+
 const URL_API_TMDB = "https://api.themoviedb.org/3";
 const PAGINAS_A_IMPORTAR = 5;
 const URL_SUPABASE = process.env.SUPABASE_URL;
-const CLAVE_SERVICIO = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const CLAVE_PRIVADA_SUPABASE =
+  process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const TOKEN_TMDB = process.env.TMDB_READ_ACCESS_TOKEN;
 
 function comprobarCredenciales() {
@@ -11,8 +14,12 @@ function comprobarCredenciales() {
     faltantes.push("SUPABASE_URL");
   }
 
-  if (!CLAVE_SERVICIO) {
-    faltantes.push("SUPABASE_SERVICE_ROLE_KEY");
+  if (!CLAVE_PRIVADA_SUPABASE) {
+    faltantes.push("SUPABASE_SECRET_KEY");
+  } else if (CLAVE_PRIVADA_SUPABASE.startsWith("sb_publishable_")) {
+    throw new Error(
+      "SUPABASE_SECRET_KEY tiene una clave pública. Copia la clave sb_secret_ de Supabase.",
+    );
   }
 
   if (!TOKEN_TMDB) {
@@ -83,12 +90,7 @@ async function guardarPeliculas(peliculas) {
     `${URL_SUPABASE}/rest/v1/peliculas?on_conflict=tmdb_id`,
     {
       method: "POST",
-      headers: {
-        apikey: CLAVE_SERVICIO,
-        Authorization: `Bearer ${CLAVE_SERVICIO}`,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates",
-      },
+      headers: crearEncabezadosSupabase(CLAVE_PRIVADA_SUPABASE),
       body: JSON.stringify(peliculas),
     },
   );

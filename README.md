@@ -22,7 +22,7 @@ npm install
 cp .env.example .env
 ```
 
-Agrega los valores de Supabase y TMDB a `.env`. Las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` se usan en la aplicación. La clave `SUPABASE_SERVICE_ROLE_KEY` y el token de TMDB solo se usan en el proceso de importación; no agregues esos valores al código del navegador.
+Agrega los valores de Supabase y TMDB a `.env`. Las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` se usan en la aplicación. La clave `SUPABASE_SECRET_KEY` y el token de TMDB solo se usan en el proceso de importación; no agregues esos valores al código del navegador.
 
 ## Configurar Supabase
 
@@ -30,7 +30,7 @@ Agrega los valores de Supabase y TMDB a `.env`. Las variables `VITE_SUPABASE_URL
 2. En Authentication, habilita Google como proveedor y agrega las credenciales OAuth de Google.
 3. Configura la URL del sitio y las URL de redirección de Supabase. Para desarrollo local, permite `http://localhost:5173`.
 4. Copia la URL del proyecto y la clave pública en las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`.
-5. Copia la clave `service_role` en `SUPABASE_SERVICE_ROLE_KEY`. Esta clave tiene permisos privilegiados y debe permanecer solo en `.env`.
+5. Copia la clave privada `sb_secret_...` en `SUPABASE_SECRET_KEY`. Si tu proyecto solo tiene la clave antigua `service_role`, colócala en `SUPABASE_SERVICE_ROLE_KEY`. Ambas se usan únicamente en Node y deben permanecer fuera del navegador y del control de versiones.
 
 ## Configurar TMDB
 
