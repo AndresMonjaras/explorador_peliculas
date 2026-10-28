@@ -1,4 +1,4 @@
-import { AccesoGoogle } from "./components/AccesoGoogle.jsx";
+import { AccesoSocial } from "./components/AccesoSocial.jsx";
 import { PiePagina } from "./components/PiePagina.jsx";
 import { supabaseConfigurado } from "./config/supabase.js";
 import { useSesion } from "./hooks/useSesion.js";
@@ -40,9 +40,9 @@ function App() {
   if (!sesion) {
     return (
       <>
-        <AccesoGoogle
+        <AccesoSocial
           onEntrar={iniciarSesion}
-          cargando={cargandoAcceso}
+          proveedorCargando={cargandoAcceso}
           error={errorAcceso}
         />
         <PiePagina />

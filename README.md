@@ -27,10 +27,12 @@ Agrega los valores de Supabase y TMDB a `.env`. Las variables `VITE_SUPABASE_URL
 ## Configurar Supabase
 
 1. Abre el editor SQL de Supabase y ejecuta `supabase/esquema.sql`.
-2. En Authentication, habilita Google como proveedor y agrega las credenciales OAuth de Google.
+2. En Authentication > Sign In / Providers, habilita Google y/o Discord. Agrega las credenciales OAuth de cada proveedor que quieras usar.
 3. Configura la URL del sitio y las URL de redirección de Supabase. Para desarrollo local, permite `http://localhost:5173`.
 4. Copia la URL del proyecto y la clave pública en las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`.
 5. Copia la clave privada `sb_secret_...` en `SUPABASE_SECRET_KEY`. Si tu proyecto solo tiene la clave antigua `service_role`, colócala en `SUPABASE_SERVICE_ROLE_KEY`. Ambas se usan únicamente en Node y deben permanecer fuera del navegador y del control de versiones.
+
+Para Google y Discord, Supabase muestra una URL de callback en la configuración de cada proveedor. Registra esa URL en Google Cloud o en Discord Developer Portal, dentro de OAuth2 > Redirects, y copia el Client ID y el Client Secret del proveedor a Supabase. La URL de callback suele tener este formato: `https://<project-ref>.supabase.co/auth/v1/callback`. Las credenciales OAuth se configuran en Supabase; no se agregan a las variables `VITE_`.
 
 ## Configurar TMDB
 

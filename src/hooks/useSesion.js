@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../config/supabase.js";
 import {
   cerrarSesion as cerrarSesionEnSupabase,
-  iniciarSesionConGoogle,
+  iniciarSesionConOAuth,
 } from "../services/autenticacion.js";
 
 function obtenerMensaje(error, mensajeAlternativo) {
@@ -12,7 +12,7 @@ function obtenerMensaje(error, mensajeAlternativo) {
 export function useSesion() {
   const [sesion, setSesion] = useState(null);
   const [cargando, setCargando] = useState(true);
-  const [cargandoAcceso, setCargandoAcceso] = useState(false);
+  const [cargandoAcceso, setCargandoAcceso] = useState("");
   const [errorAcceso, setErrorAcceso] = useState("");
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function useSesion() {
     const { data } = supabase.auth.onAuthStateChange((_evento, nuevaSesion) => {
       setSesion(nuevaSesion);
       setCargando(false);
-      setCargandoAcceso(false);
+      setCargandoAcceso("");
       setErrorAcceso("");
     });
 
@@ -62,15 +62,25 @@ export function useSesion() {
     };
   }, []);
 
-  async function iniciarSesion() {
-    setCargandoAcceso(true);
+  async function iniciarSesion(proveedor) {
+    setCargandoAcceso(proveedor);
     setErrorAcceso("");
 
     try {
-      await iniciarSesionConGoogle();
+      await iniciarSesionConOAuth(proveedor);
     } catch (error) {
-      setErrorAcceso(obtenerMensaje(error, "No se pudo iniciar sesión."));
-      setCargandoAcceso(false);
+      if (error.message.includes("provider is not enabled")) {
+        const nombreProveedor =
+          proveedor === "discord" ? "Discord" : "Google";
+
+        setErrorAcceso(
+          `${nombreProveedor} no está habilitado en Supabase. Actívalo en Authentication > Sign In / Providers.`,
+        );
+      } else {
+        setErrorAcceso(obtenerMensaje(error, "No se pudo iniciar sesión."));
+      }
+
+      setCargandoAcceso("");
     }
   }
 

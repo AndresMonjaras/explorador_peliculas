@@ -402,6 +402,11 @@ a {
   line-height: 1.6;
 }
 
+.acceso__proveedores {
+  display: grid;
+  gap: 0.8rem;
+}
+
 .mensaje-error {
   margin: 1rem 0 0;
   color: #ffb09c;
