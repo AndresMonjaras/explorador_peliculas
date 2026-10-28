@@ -1,4 +1,5 @@
 import { crearEncabezadosSupabase } from "./crearEncabezadosSupabase.js";
+import { eliminarPeliculasDuplicadas } from "./eliminarPeliculasDuplicadas.js";
 
 const URL_API_TMDB = "https://api.themoviedb.org/3";
 const PAGINAS_A_IMPORTAR = 5;
@@ -136,12 +137,20 @@ async function importarPeliculas() {
     peliculasImportadas.push(...peliculasValidas);
   }
 
-  if (peliculasImportadas.length === 0) {
+  const peliculasUnicas = eliminarPeliculasDuplicadas(peliculasImportadas);
+
+  if (peliculasUnicas.length === 0) {
     throw new Error("TMDb no devolvió películas válidas para importar.");
   }
 
-  await guardarPeliculas(peliculasImportadas);
-  console.log(`Se importaron ${peliculasImportadas.length} películas.`);
+  await guardarPeliculas(peliculasUnicas);
+
+  const duplicadosOmitidos = peliculasImportadas.length - peliculasUnicas.length;
+  console.log(`Se importaron ${peliculasUnicas.length} películas.`);
+
+  if (duplicadosOmitidos > 0) {
+    console.log(`Películas repetidas omitidas: ${duplicadosOmitidos}.`);
+  }
 }
 
 importarPeliculas().catch((error) => {
